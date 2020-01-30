@@ -23,6 +23,12 @@ public class Fakultas {
       // TODO: implement
    }
    
+   public Fakultas(String Id_fakultas, String nama_fakultas) {
+      // TODO: implement
+       setId_fakultas(Id_fakultas);
+       setnama_fakultas(nama_fakultas);
+   }
+   
    /** @pdOid bab64405-cc83-433e-9453-a7277ee48538 */
    public String getId_fakultas() {
       return Id_fakultas;
