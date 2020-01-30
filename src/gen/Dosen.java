@@ -41,17 +41,67 @@ public class Dosen extends Biodata {
        try(PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
            statement.setString(1, getnpp());
            statement.setString(2, getnama());
-           statement.setString(3, getNik());
-           java.sql.Date sqlDate = new java.sql.Date(getTanggalLahir().getTime());
-           statement.setDate(4, sqlDate);
-           statement.setString(5, ""+getJenisKelamin());
-           statement.setString(6, getAlamat());
-           statement.setString(7, getEmail());
-           statement.setString(8, getAgama());
+           java.sql.Date sqlDate = new java.sql.Date(getTanggal_lahir().getTime());
+           statement.setDate(3, sqlDate);
+           statement.setString(4, gettempat_lahir());
+           statement.setInt(5, getno_telpon());
+           statement.setString(6, getalamat());
            
            statement.execute();
            statement.close();
        } catch (Exception e) {
        }
+   }
+   
+   public Dosen satuDb(String npp){
+       Dosen dos = new Dosen();
+       String query = "SELECT * FROM dosen WHERE npp = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setString(1, npp);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   dos.setnpp(rs.getString("npp"));
+                   dos.setnama(rs.getString("nama"));
+                   dos.settanggal_lahir(rs.getDate("tanggal_lahir"));
+                   dos.settempat_lahir(rs.getString("tempat_lahir"));
+                   dos.setno_telpon(rs.getString("jenisKelamin").charAt(0));
+                   dos.setalamat(rs.getString("alamat"));
+                   
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return dos;
+   }
+   
+   public ArrayList<Dosen> semuaDb(){
+       ArrayList<Dosen> list = new ArrayList<>();
+       try{
+           String query = "SELECT * FROM dosen";
+           
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           ResultSet rs = statement.executeQuery();
+           while(rs.next()){
+               Dosen dos = new Dosen();
+               dos.setnpp(rs.getString("npp"));
+                   dos.setnama(rs.getString("nama"));
+                   dos.settanggal_lahir(rs.getDate("tanggal_lahir"));
+                   dos.settempat_lahir(rs.getString("tempat_lahir"));
+                   dos.setno_telpon(rs.getString("jenisKelamin").charAt(0));
+                   dos.setalamat(rs.getString("alamat"));
+               list.add(dos);
+           }
+           statement.close();
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return list;
    }
 }
