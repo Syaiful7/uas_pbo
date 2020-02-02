@@ -101,6 +101,30 @@ public class Jabatan {
        return jab;
    }
    
+   public Jabatan satuDosenDb(String npp){
+       Jabatan jab = new Jabatan();
+       String query = "SELECT * FROM jabatan WHERE npp = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setString(1, npp);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   jab.setId_jabatan(rs.getInt("Id_jabatan"));
+                   jab.fakultas = new Fakultas().satuDb(rs.getString("Id_fakultas"));
+                   jab.dosen = new Dosen().satuDb(rs.getString("npp"));
+                   jab.setnama_jabatan(rs.getString("nama_jabatan"));
+                   
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return jab;
+   }
+   
    public ArrayList<Jabatan> semuaDb(){
        ArrayList<Jabatan> list = new ArrayList<>();
        try{

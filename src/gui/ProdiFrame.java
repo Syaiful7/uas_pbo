@@ -6,6 +6,9 @@
 package gui;
 
 import gen.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,7 +16,6 @@ import gen.*;
  */
 public class ProdiFrame extends javax.swing.JFrame {
     Prodi prodi;
-    Dosen dosen;
     /**
      * Creates new form Prodi
      */
@@ -21,10 +23,12 @@ public class ProdiFrame extends javax.swing.JFrame {
         initComponents();
     }
 
-    public ProdiFrame(Users user) {
+    public ProdiFrame(Prodi pro) {
         initComponents();
-        dosen = new Dosen().satuDb(user.getusername());
-//        prodi = new Prodi().satuDb();
+        prodi = pro;
+        halo.setText("Nama : " + prodi.jabatan.dosen.getnama());
+        halo1.setText("Jabatan : " +prodi.jabatan.getnama_jabatan() + " " + prodi.getnama_prodi());
+        getProker();
     }
     
     /**
@@ -50,8 +54,14 @@ public class ProdiFrame extends javax.swing.JFrame {
         lokasi_proker = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         uraian = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        ajukan = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tabelproker = new javax.swing.JTable();
+        refresh = new javax.swing.JButton();
+        halo = new javax.swing.JLabel();
+        keluar = new javax.swing.JButton();
+        halo1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,10 +79,10 @@ public class ProdiFrame extends javax.swing.JFrame {
 
         jLabel6.setText("uraian");
 
-        jButton1.setText("Ajukan");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        ajukan.setText("Ajukan");
+        ajukan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                ajukanActionPerformed(evt);
             }
         });
 
@@ -111,7 +121,7 @@ public class ProdiFrame extends javax.swing.JFrame {
                                         .addComponent(lokasi_proker, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(124, 124, 124)
-                        .addComponent(jButton1)))
+                        .addComponent(ajukan)))
                 .addContainerGap(280, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -142,43 +152,135 @@ public class ProdiFrame extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(uraian, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(373, Short.MAX_VALUE))
+                .addComponent(ajukan)
+                .addContainerGap(237, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Pengajuan Program Kerja", jPanel1);
+
+        tabelproker.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id | Nama Program", "Pelaksanaan", "Selesai", "Anggaran", "Lokasi", "Keterangan", "Status"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tabelproker);
+
+        refresh.setText("Refresh");
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 506, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(refresh)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 573, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(refresh)
+                .addContainerGap(157, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Lihat Laporan", jPanel2);
+
+        halo.setText("jLabel7");
+
+        keluar.setText("Log Out");
+        keluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                keluarActionPerformed(evt);
+            }
+        });
+
+        halo1.setText("jLabel7");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(halo, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(keluar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(halo1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(keluar)
+                    .addComponent(halo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(halo1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void ajukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajukanActionPerformed
         // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+        Program_kerja proker = new Program_kerja(nama_proker.getText(), tgl_pelaksanaan.getDate(), tgl_selesai.getDate(), Double.parseDouble(angg_digunakan.getText()), lokasi_proker.getText(), uraian.getText(), "Belum Acc", prodi.getId_prodi());
+        proker.insertDb();
+        nama_proker.setText(null);
+        tgl_pelaksanaan.setDate(null);
+        tgl_selesai.setDate(null);
+        angg_digunakan.setText(null);
+        lokasi_proker.setText(null);
+        uraian.setText(null);
+    }//GEN-LAST:event_ajukanActionPerformed
+
+    private void keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keluarActionPerformed
+        // TODO add your handling code here:
+        new Login().setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_keluarActionPerformed
+
+    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+        // TODO add your handling code here:
+        getProker();
+    }//GEN-LAST:event_refreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,9 +318,36 @@ public class ProdiFrame extends javax.swing.JFrame {
         });
     }
 
+    public void getProker(){
+        DefaultTableModel Table = (DefaultTableModel) tabelproker.getModel();
+        Table.setRowCount(0);
+        Object[] atribut = new Object[7];
+        ArrayList<Program_kerja> list = new Program_kerja().semuaDb();
+        Iterator<Program_kerja> tiapList = list.iterator();
+        while(tiapList.hasNext()){
+            Program_kerja proker = tiapList.next();
+            if(prodi.getId_prodi().equals(proker.prodi.getId_prodi()))
+            {
+                atribut[0] = proker.getId_proker() + " | " + proker.getnama_proker();
+                atribut[1] = proker.getTgl_pelaksanaan();
+                atribut[2] = proker.getTgl_selesai();
+                atribut[3] = proker.getangg_digunakan();
+                atribut[4] = proker.getlokasi_proker();
+                atribut[5] = proker.geturaian();
+                atribut[6] = proker.getstatus();
+
+                Table.addRow(atribut);
+                     
+            }
+        }
+        tabelproker.setModel(Table);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ajukan;
     private javax.swing.JFormattedTextField angg_digunakan;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel halo;
+    private javax.swing.JLabel halo1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -227,9 +356,13 @@ public class ProdiFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton keluar;
     private javax.swing.JTextField lokasi_proker;
     private javax.swing.JTextField nama_proker;
+    private javax.swing.JButton refresh;
+    private javax.swing.JTable tabelproker;
     private com.toedter.calendar.JDateChooser tgl_pelaksanaan;
     private com.toedter.calendar.JDateChooser tgl_selesai;
     private javax.swing.JTextField uraian;

@@ -6,6 +6,11 @@
 package gui;
 
 import gen.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,6 +18,9 @@ import gen.*;
  */
 public class FakultasFrame extends javax.swing.JFrame {
     Fakultas fakultas;
+    Dosen dosen;
+    Jabatan jabatan;
+    Program_kerja progker;
     /**
      * Creates new form Fakultas
      */
@@ -22,9 +30,14 @@ public class FakultasFrame extends javax.swing.JFrame {
 
     public FakultasFrame(Users user) {
         initComponents();
-        
+        dosen = new Dosen().satuDb(user.getusername());
+        jabatan = new Jabatan().satuDosenDb(dosen.getnpp());
+        fakultas = jabatan.fakultas;
+        getProker();
+        hideTombol(false);
+        halo.setText("Nama : " + dosen.getnama());
+        halo1.setText("Jabatan : " + jabatan.getnama_jabatan() + " " + fakultas.getnama_fakultas());
     }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,7 +61,9 @@ public class FakultasFrame extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tabelTolak = new javax.swing.JTable();
         setujuTolak = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        halo = new javax.swing.JLabel();
+        keluar = new javax.swing.JButton();
+        halo1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,7 +79,7 @@ public class FakultasFrame extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -83,8 +98,18 @@ public class FakultasFrame extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tabelProker);
 
         setujuProker.setText("Setuju");
+        setujuProker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setujuProkerActionPerformed(evt);
+            }
+        });
 
         tolakProker.setText("Tolak");
+        tolakProker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tolakProkerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -128,7 +153,7 @@ public class FakultasFrame extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -147,6 +172,11 @@ public class FakultasFrame extends javax.swing.JFrame {
         jScrollPane3.setViewportView(tabelSetuju);
 
         tolakSetuju.setText("Tolak");
+        tolakSetuju.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tolakSetujuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -186,7 +216,7 @@ public class FakultasFrame extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -205,6 +235,11 @@ public class FakultasFrame extends javax.swing.JFrame {
         jScrollPane4.setViewportView(tabelTolak);
 
         setujuTolak.setText("Setuju");
+        setujuTolak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setujuTolakActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -232,7 +267,16 @@ public class FakultasFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Program Kerja Ditolak", jPanel3);
 
-        jLabel1.setText("jLabel1");
+        halo.setText("jLabel1");
+
+        keluar.setText("Log Out");
+        keluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                keluarActionPerformed(evt);
+            }
+        });
+
+        halo1.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -242,17 +286,25 @@ public class FakultasFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPane1))
+                        .addComponent(halo, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(keluar))
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(halo1, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(126, 126, 126)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(keluar)
+                    .addComponent(halo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(halo1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69)
                 .addComponent(jTabbedPane1))
         );
 
@@ -261,15 +313,75 @@ public class FakultasFrame extends javax.swing.JFrame {
 
     private void tabelProkerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelProkerMouseClicked
         // TODO add your handling code here:
+        String setring = tabelProker.getValueAt(tabelProker.getSelectedRow(), 1).toString();
+        StringTokenizer token = new StringTokenizer(setring);
+        int idProker = Integer.parseInt(token.nextToken(" | "));        
+        
+        progker = new Program_kerja().satuDb(idProker);
+        hideTombol(true);
     }//GEN-LAST:event_tabelProkerMouseClicked
 
     private void tabelSetujuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelSetujuMouseClicked
         // TODO add your handling code here:
+        String setring = tabelSetuju.getValueAt(tabelSetuju.getSelectedRow(), 1).toString();
+        StringTokenizer token = new StringTokenizer(setring);
+        int idProker = Integer.parseInt(token.nextToken(" | "));        
+        
+        progker = new Program_kerja().satuDb(idProker);
+        hideTombol(true);
     }//GEN-LAST:event_tabelSetujuMouseClicked
 
     private void tabelTolakMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelTolakMouseClicked
         // TODO add your handling code here:
+        String setring = tabelTolak.getValueAt(tabelTolak.getSelectedRow(), 1).toString();
+        StringTokenizer token = new StringTokenizer(setring);
+        int idProker = Integer.parseInt(token.nextToken(" | "));        
+        
+        progker = new Program_kerja().satuDb(idProker);
+        hideTombol(true);
     }//GEN-LAST:event_tabelTolakMouseClicked
+
+    private void setujuProkerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setujuProkerActionPerformed
+        // TODO add your handling code here:
+        progker.setstatus("Disetujui");
+        progker.updateDb();
+        hideTombol(false);
+        getProker();
+        tabelProker.clearSelection();
+    }//GEN-LAST:event_setujuProkerActionPerformed
+
+    private void tolakProkerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tolakProkerActionPerformed
+        // TODO add your handling code here:
+        progker.setstatus("Disetujui");
+        progker.updateDb();
+        hideTombol(false);
+        getProker();
+        tabelProker.clearSelection();
+    }//GEN-LAST:event_tolakProkerActionPerformed
+
+    private void tolakSetujuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tolakSetujuActionPerformed
+        // TODO add your handling code here:
+        progker.setstatus("Ditolak");
+        progker.updateDb();
+        hideTombol(false);
+        getProker();
+        tabelSetuju.clearSelection();
+    }//GEN-LAST:event_tolakSetujuActionPerformed
+
+    private void setujuTolakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setujuTolakActionPerformed
+        // TODO add your handling code here:
+        progker.setstatus("Disetujui");
+        progker.updateDb();
+        hideTombol(false);
+        getProker();
+        tabelTolak.clearSelection();
+    }//GEN-LAST:event_setujuTolakActionPerformed
+
+    private void keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keluarActionPerformed
+        // TODO add your handling code here:
+        new Login().setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_keluarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -306,13 +418,64 @@ public class FakultasFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void getProker(){
+        DefaultTableModel TableBelumAcc = (DefaultTableModel) tabelProker.getModel();
+        TableBelumAcc.setRowCount(0);
+        DefaultTableModel TableSetuju = (DefaultTableModel) tabelSetuju.getModel();
+        TableSetuju.setRowCount(0);
+        DefaultTableModel TableTolak = (DefaultTableModel) tabelTolak.getModel();
+        TableTolak.setRowCount(0);
+        Object[] atribut = new Object[7];
+        ArrayList<Program_kerja> list = new Program_kerja().semuaDb();
+        Iterator<Program_kerja> tiapList = list.iterator();
+        while(tiapList.hasNext()){
+            Program_kerja proker = tiapList.next();
+            if(fakultas.getId_fakultas().equals(proker.prodi.fakultas.getId_fakultas()))
+            {
+                atribut[0] = proker.prodi.getnama_prodi() + " | " + proker.prodi.jabatan.dosen.getnama();
+                atribut[1] = proker.getId_proker() + " | " + proker.getnama_proker();
+                atribut[2] = proker.getTgl_pelaksanaan();
+                atribut[3] = proker.getTgl_selesai();
+                atribut[4] = proker.getangg_digunakan();
+                atribut[5] = proker.getlokasi_proker();
+                atribut[6] = proker.geturaian();
 
-    public void getProdi(){
-        
+                switch(proker.getstatus()){
+                    case "Belum Acc" :
+                    {
+                        TableBelumAcc.addRow(atribut);
+                        break;
+                    }
+                    case "Disetujui" :
+                    {
+                        TableSetuju.addRow(atribut);
+                        break;
+                    }
+                    
+                    case "Ditolak" :
+                    {
+                        TableTolak.addRow(atribut);
+                        break;
+                    }
+                }
+            }
+        }
+        tabelProker.setModel(TableBelumAcc);
+        tabelSetuju.setModel(TableSetuju);
+        tabelTolak.setModel(TableTolak);
+    }
+    
+    public void hideTombol(Boolean bool){
+        setujuProker.setVisible(bool);
+        setujuTolak.setVisible(bool);
+        tolakProker.setVisible(bool);
+        tolakSetuju.setVisible(bool);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel halo;
+    private javax.swing.JLabel halo1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -320,6 +483,7 @@ public class FakultasFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton keluar;
     private javax.swing.JButton setujuProker;
     private javax.swing.JButton setujuTolak;
     private javax.swing.JTable tabelProker;

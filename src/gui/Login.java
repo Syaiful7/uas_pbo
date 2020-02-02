@@ -235,34 +235,19 @@ public class Login extends javax.swing.JFrame {
         if(user.getusername() != null){
             if(user.getpassword().equals(password.getText())){
                 switch(user.getTipeLogin()){
-                    case "Dosen" :
-                    {
-                        Dosen dos = new Dosen().satuDb(user.getusername());
-                        Jabatan jabatan = new Jabatan();
-                        ArrayList<Jabatan> jabs = new Jabatan().semuaDb();
-                        Iterator<Jabatan> tiapjab = jabs.iterator();
-                        while(tiapjab.hasNext()){
-                            Jabatan jab = tiapjab.next();
-                            if(dos.equals(jab.dosen)){
-                                jabatan = jab;
-                                break;
-                            }
-                        }
-                        if(jabatan.fakultas == null){
-                            
-                        }
-                        break;
-                    }
                     case "Prodi" :
                     {
-                        Prodi pro = new Prodi().satuDb(Integer.parseInt(user.getusername()));
+                        Prodi pro = new Prodi().satuDb(user.getusername());
+                        new ProdiFrame(pro).setVisible(true);
                         break;
                     }
-                    case "Fakultas" :
+                    
+                    default :
                     {
-                        Fakultas fak = new Fakultas().satuDb(user.getusername());
+                        new FakultasFrame(user).setVisible(true);
                     }
                 }
+                setVisible(false);
             }
             else
                 JOptionPane.showMessageDialog(null, "Password Salah");

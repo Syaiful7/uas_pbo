@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     1/30/2020 6:40:13 PM                         */
+/* Created on:     2/2/2020 2:01:33 PM                          */
 /*==============================================================*/
 
 
@@ -50,8 +50,8 @@ create table Jabatan
 create table Prodi
 (
    Id_prodi             varchar(254) not null  comment '',
-   Id_fakultas          varchar(254)  comment '',
    Id_jabatan           int  comment '',
+   Id_fakultas          varchar(254)  comment '',
    nama_prodi           varchar(254)  comment '',
    primary key (Id_prodi),
    constraint FK_PRODI_ASSOCIATI_FAKULTAS foreign key (Id_fakultas)
@@ -80,9 +80,9 @@ create table Program_kerja
 );
 
 /*==============================================================*/
-/* Table: User                                                  */
+/* Table: Users                                                 */
 /*==============================================================*/
-create table User
+create table Users
 (
    username             varchar(254) not null  comment '',
    password             varchar(254)  comment '',

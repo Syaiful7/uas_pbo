@@ -37,7 +37,7 @@ public class Program_kerja {
       // TODO: implement
    }
    
-   public Program_kerja(String nama_proker, java.util.Date tgl_pelaksanaan, java.util.Date tgl_selesai, double angg_digunakan, String lokasi_proker, String uraian, String status, int Id_prodi) {
+   public Program_kerja(String nama_proker, java.util.Date tgl_pelaksanaan, java.util.Date tgl_selesai, double angg_digunakan, String lokasi_proker, String uraian, String status, String Id_prodi) {
       // TODO: implement
       setId_proker(semuaDb().size() + 1);
       setnama_proker(nama_proker);
@@ -169,7 +169,7 @@ public class Program_kerja {
                rs = statement.executeQuery();
                if(rs.next()){
                    proker.setId_proker(rs.getInt("Id_proker"));
-                   proker.prodi = new Prodi().satuDb(rs.getInt("Id_prodi"));
+                   proker.prodi = new Prodi().satuDb(rs.getString("Id_prodi"));
                    proker.setnama_proker(rs.getString("nama_proker"));
                    proker.settgl_pelaksanaan(rs.getDate("tgl_pelaksanaan"));
                    proker.settgl_selesai(rs.getDate("tgl_selesai"));
@@ -197,7 +197,7 @@ public class Program_kerja {
            while(rs.next()){
                Program_kerja proker = new Program_kerja();
                proker.setId_proker(rs.getInt("Id_proker"));
-               proker.prodi = new Prodi().satuDb(rs.getInt("Id_prodi"));
+               proker.prodi = new Prodi().satuDb(rs.getString("Id_prodi"));
                proker.setnama_proker(rs.getString("nama_proker"));
                proker.settgl_pelaksanaan(rs.getDate("tgl_pelaksanaan"));
                proker.settgl_selesai(rs.getDate("tgl_selesai"));

@@ -72,13 +72,13 @@ public class Prodi {
        }
    }
    
-   public Prodi satuDb(int Id_prodi){
+   public Prodi satuDb(String Id_prodi){
        Prodi pro = new Prodi();
        String query = "SELECT * FROM prodi WHERE Id_prodi = (?)";
        try{
            ResultSet rs;
            try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
-               statement.setInt(1, Id_prodi);
+               statement.setString(1, Id_prodi);
                rs = statement.executeQuery();
                if(rs.next()){
                    pro.setId_prodi(rs.getString("Id_prodi"));
