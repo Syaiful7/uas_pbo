@@ -6,6 +6,9 @@ package gen;
  * Purpose: Defines the Class Fakultas
  ***********************************************************************/
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 /** @pdOid 35be3c37-a4f5-4e27-9f6e-b8687636f485 */
@@ -14,9 +17,6 @@ public class Fakultas {
    private String Id_fakultas;
    /** @pdOid 5cd5d4f9-4282-4372-a152-a3e76ae51241 */
    private String nama_fakultas;
-   
-   /** @pdRoleInfo migr=no name=Jabatan assc=association5 coll=java.util.Collection impl=java.util.ArrayList mult=0..* */
-   public java.util.Collection<Jabatan> jabatan;
    
    /** @pdOid cb5c9259-a635-4c28-aa3f-fa16fadce5f9 */
    public Fakultas() {
@@ -51,54 +51,74 @@ public class Fakultas {
       nama_fakultas = newNama_fakultas;
    }
    
-   
-   /** @pdGenerated default getter */
-   public java.util.Collection<Jabatan> getJabatan() {
-      if (jabatan == null)
-         jabatan = new java.util.ArrayList<Jabatan>();
-      return jabatan;
+   public void insertDb(){
+       String query = "INSERT INTO fakultas VALUES (?, ?)";
+       try(PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+           statement.setString(1, getId_fakultas());
+           statement.setString(2, getnama_fakultas());
+           
+           statement.execute();
+           statement.close();
+       } catch (Exception e) {
+       }
    }
    
-   /** @pdGenerated default iterator getter */
-   public java.util.Iterator getIteratorJabatan() {
-      if (jabatan == null)
-         jabatan = new java.util.ArrayList<Jabatan>();
-      return jabatan.iterator();
+   public Fakultas satuDb(String Id_fakultas){
+       Fakultas fak = new Fakultas();
+       String query = "SELECT * FROM fakultas WHERE Id_fakultas = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setString(1, Id_fakultas);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   fak.setId_fakultas(rs.getString("Id_fakultas"));
+                   fak.setnama_fakultas(rs.getString("nama_fakultas"));
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return fak;
    }
    
-   /** @pdGenerated default setter
-     * @param newJabatan */
-   public void setJabatan(java.util.Collection<Jabatan> newJabatan) {
-      removeAllJabatan();
-      for (java.util.Iterator iter = newJabatan.iterator(); iter.hasNext();)
-         addJabatan((Jabatan)iter.next());
+   public ArrayList<Fakultas> semuaDb(){
+       ArrayList<Fakultas> list = new ArrayList<>();
+       try{
+           String query = "SELECT * FROM fakultas";
+           
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           ResultSet rs = statement.executeQuery();
+           while(rs.next()){
+               Fakultas fak = new Fakultas();
+               fak.setId_fakultas(rs.getString("Id_fakultas"));
+               fak.setnama_fakultas(rs.getString("nama_fakultas"));
+               
+               list.add(fak);
+           }
+           statement.close();
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return list;
    }
    
-   /** @pdGenerated default add
-     * @param newJabatan */
-   public void addJabatan(Jabatan newJabatan) {
-      if (newJabatan == null)
-         return;
-      if (this.jabatan == null)
-         this.jabatan = new java.util.ArrayList<Jabatan>();
-      if (!this.jabatan.contains(newJabatan))
-         this.jabatan.add(newJabatan);
+    public void perbaruiDb(){
+       try{
+           String query = "UPDATE fakultas SET nama_fakultas = (?) WHERE Id_fakultas =(?)";
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           
+           statement.setString(1, getnama_fakultas());
+           statement.setString(2, getId_fakultas());
+           statement.execute();
+           statement.close();
+       }
+       catch(SQLException e){
+           
+       }
    }
-   
-   /** @pdGenerated default remove
-     * @param oldJabatan */
-   public void removeJabatan(Jabatan oldJabatan) {
-      if (oldJabatan == null)
-         return;
-      if (this.jabatan != null)
-         if (this.jabatan.contains(oldJabatan))
-            this.jabatan.remove(oldJabatan);
-   }
-   
-   /** @pdGenerated default removeAll */
-   public void removeAllJabatan() {
-      if (jabatan != null)
-         jabatan.clear();
-   }
-
 }

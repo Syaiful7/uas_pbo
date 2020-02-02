@@ -104,4 +104,27 @@ public class Dosen extends Biodata {
        }
        return list;
    }
+   
+    public void perbaruiDb(){
+       try{
+           String query = "UPDATE dosen SET nama = (?), tanggal_lahir = (?), tempat_lahir = (?),"
+                   + " no_telpon = (?), alamat = (?) WHERE npp =(?)";
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           
+           statement.setString(1, getnama());
+           java.sql.Date sqlDate = new java.sql.Date(getTanggal_lahir().getTime());
+           statement.setDate(2, sqlDate);
+           statement.setString(3, gettempat_lahir());
+           statement.setInt(4, getno_telpon());
+           statement.setString(5, getalamat());
+           statement.setString(6, getnpp());
+           statement.execute();
+           statement.close();
+       }
+       catch(SQLException e){
+           
+       }
+   }
+    
+    
 }

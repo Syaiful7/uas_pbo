@@ -5,6 +5,11 @@
  */
 package gui;
 
+import gen.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
@@ -38,15 +43,15 @@ public class Login extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        keluar = new javax.swing.JButton();
+        login = new javax.swing.JButton();
+        username = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        password = new javax.swing.JPasswordField();
         jLabel2 = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
@@ -156,23 +161,25 @@ public class Login extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(311, 0, 190, 539));
 
-        jButton1.setText("KELUAR");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        keluar.setText("KELUAR");
+        keluar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                keluarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 420, 90, 40));
+        getContentPane().add(keluar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 420, 90, 40));
 
-        jButton2.setText("LOG IN");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 90, 40));
+        login.setText("LOG IN");
+        login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginActionPerformed(evt);
+            }
+        });
+        getContentPane().add(login, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 90, 40));
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 350, 160, 30));
-
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setToolTipText("");
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 160, 30));
+        username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        username.setToolTipText("");
+        getContentPane().add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 160, 30));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Username");
@@ -203,6 +210,13 @@ public class Login extends javax.swing.JFrame {
         jLabel5.setText("PELAPORAN PROGRAM KERJA");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, -1, -1));
 
+        password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordActionPerformed(evt);
+            }
+        });
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 350, 160, 30));
+
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\User\\Music\\Tugas Uas Pbo\\login png 2.png")); // NOI18N
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 540));
@@ -210,10 +224,57 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keluarActionPerformed
         // TODO add your handling code here:
        System.exit(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_keluarActionPerformed
+
+    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        // TODO add your handling code here:
+        Users user = new Users().satuDb(username.getText());
+        if(user.getusername() != null){
+            if(user.getpassword().equals(password.getText())){
+                switch(user.getTipeLogin()){
+                    case "Dosen" :
+                    {
+                        Dosen dos = new Dosen().satuDb(user.getusername());
+                        Jabatan jabatan = new Jabatan();
+                        ArrayList<Jabatan> jabs = new Jabatan().semuaDb();
+                        Iterator<Jabatan> tiapjab = jabs.iterator();
+                        while(tiapjab.hasNext()){
+                            Jabatan jab = tiapjab.next();
+                            if(dos.equals(jab.dosen)){
+                                jabatan = jab;
+                                break;
+                            }
+                        }
+                        if(jabatan.fakultas == null){
+                            
+                        }
+                        break;
+                    }
+                    case "Prodi" :
+                    {
+                        Prodi pro = new Prodi().satuDb(Integer.parseInt(user.getusername()));
+                        break;
+                    }
+                    case "Fakultas" :
+                    {
+                        Fakultas fak = new Fakultas().satuDb(user.getusername());
+                    }
+                }
+            }
+            else
+                JOptionPane.showMessageDialog(null, "Password Salah");
+        }
+        else
+            JOptionPane.showMessageDialog(null, "Data tidak ditemukan");
+    }//GEN-LAST:event_loginActionPerformed
+
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        // TODO add your handling code here:
+        loginActionPerformed(evt);
+    }//GEN-LAST:event_passwordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -251,8 +312,6 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -270,8 +329,10 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton keluar;
+    private javax.swing.JButton login;
+    private javax.swing.JPasswordField password;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 
     private void exit() {

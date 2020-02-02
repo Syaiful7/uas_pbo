@@ -7,6 +7,7 @@ package gen;
  ***********************************************************************/
 
 import java.util.*;
+import java.sql.*;
 
 /** @pdOid e856b1f9-dab0-4ddb-9cd3-d601f6426682 */
 public class Program_kerja {
@@ -32,8 +33,21 @@ public class Program_kerja {
    
    /** @param status
     * @pdOid 23548a5d-a65b-4e26-9e80-8958afbc6864 */
-   public Program_kerja(int status) {
+   public Program_kerja() {
       // TODO: implement
+   }
+   
+   public Program_kerja(String nama_proker, java.util.Date tgl_pelaksanaan, java.util.Date tgl_selesai, double angg_digunakan, String lokasi_proker, String uraian, String status, int Id_prodi) {
+      // TODO: implement
+      setId_proker(semuaDb().size() + 1);
+      setnama_proker(nama_proker);
+      settgl_pelaksanaan(tgl_pelaksanaan);
+      settgl_selesai(tgl_selesai);
+      setangg_digunakan(angg_digunakan);
+      setlokasi_proker(lokasi_proker);
+      seturaian(uraian);
+      setstatus(status);
+      prodi = new Prodi().satuDb(Id_prodi);
    }
    
    /** @pdOid 71ccd32d-7069-4118-90c4-65d823e34449 */
@@ -124,4 +138,102 @@ public class Program_kerja {
       status = newStatus;
    }
 
+   public void insertDb(){
+       String query = "INSERT INTO program_kerja VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+       try(PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+           statement.setInt(1, getId_proker());
+           statement.setString(2, prodi.getId_prodi());
+           statement.setString(3, getnama_proker());
+           java.sql.Date sqlDate = new java.sql.Date(getTgl_pelaksanaan().getTime());
+           statement.setDate(4, sqlDate);
+           sqlDate = new java.sql.Date(getTgl_selesai().getTime());
+           statement.setDate(5, sqlDate);
+           statement.setDouble(6, getangg_digunakan());
+           statement.setString(7, getlokasi_proker());
+           statement.setString(8, geturaian());
+           statement.setString(9, getstatus());
+           
+           statement.execute();
+           statement.close();
+       } catch (Exception e) {
+       }
+   }
+   
+   public Program_kerja satuDb(int Id_proker){
+       Program_kerja proker = new Program_kerja();
+       String query = "SELECT * FROM program_kerja WHERE Id_proker = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setInt(1, Id_proker);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   proker.setId_proker(rs.getInt("Id_proker"));
+                   proker.prodi = new Prodi().satuDb(rs.getInt("Id_prodi"));
+                   proker.setnama_proker(rs.getString("nama_proker"));
+                   proker.settgl_pelaksanaan(rs.getDate("tgl_pelaksanaan"));
+                   proker.settgl_selesai(rs.getDate("tgl_selesai"));
+                   proker.setangg_digunakan(rs.getDouble("angg_digunakan"));
+                   proker.setlokasi_proker(rs.getString("lokasi_proker"));
+                   proker.seturaian(rs.getString("uraian"));
+                   proker.setstatus(rs.getString("status"));                
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return proker;
+   }
+   
+   public ArrayList<Program_kerja> semuaDb(){
+       ArrayList<Program_kerja> list = new ArrayList<>();
+       try{
+           String query = "SELECT * FROM program_kerja";
+           
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           ResultSet rs = statement.executeQuery();
+           while(rs.next()){
+               Program_kerja proker = new Program_kerja();
+               proker.setId_proker(rs.getInt("Id_proker"));
+               proker.prodi = new Prodi().satuDb(rs.getInt("Id_prodi"));
+               proker.setnama_proker(rs.getString("nama_proker"));
+               proker.settgl_pelaksanaan(rs.getDate("tgl_pelaksanaan"));
+               proker.settgl_selesai(rs.getDate("tgl_selesai"));
+               proker.setangg_digunakan(rs.getDouble("angg_digunakan"));
+               proker.setlokasi_proker(rs.getString("lokasi_proker"));
+               proker.seturaian(rs.getString("uraian"));
+               proker.setstatus(rs.getString("status"));    
+               list.add(proker);
+           }
+           statement.close();
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return list;
+   }
+   
+   public void updateDb(){
+       String query = "UPDATE program_kerja SET Id_prodi =(?), nama_proker =(?), tgl_pelaksanaan =(?), tgl_selesai =(?), angg_digunakan =(?), lokasi_proker =(?), uraian =(?), status  =(?) WHERE Id_proker =(?)";
+       try(PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+           statement.setString(1, prodi.getId_prodi());
+           statement.setString(2, getnama_proker());
+           java.sql.Date sqlDate = new java.sql.Date(getTgl_pelaksanaan().getTime());
+           statement.setDate(3, sqlDate);
+           sqlDate = new java.sql.Date(getTgl_selesai().getTime());
+           statement.setDate(4, sqlDate);
+           statement.setDouble(5, getangg_digunakan());
+           statement.setString(6, getlokasi_proker());
+           statement.setString(7, geturaian());
+           statement.setString(8, getstatus());
+           statement.setInt(9, getId_proker());
+           
+           statement.execute();
+           statement.close();
+       } catch (Exception e) {
+       }
+   }
 }

@@ -6,6 +6,9 @@ package gen;
  * Purpose: Defines the Class Prodi
  ***********************************************************************/
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 /** @pdOid 6fb7974a-d66c-4da1-9d2c-49be6adcc944 */
@@ -23,6 +26,14 @@ public class Prodi {
    /** @pdOid d1e3c239-53ec-4c8c-908b-e5137fe89695 */
    public Prodi() {
       // TODO: implement
+   }
+   
+   public Prodi(String Id_prodi, String nama_prodi, String Id_fakultas, int Id_jabatan) {
+      // TODO: implement
+       setId_prodi(Id_prodi);
+       setnama_prodi(nama_prodi);
+       jabatan = new Jabatan().satuDb(Id_jabatan);
+       fakultas = new Fakultas().satuDb(Id_fakultas);
    }
    
    /** @pdOid f31e0867-343c-4e0e-be67-242c34dcae01 */
@@ -47,4 +58,89 @@ public class Prodi {
       nama_prodi = newNama_prodi;
    }
 
+   public void insertDb(){
+       String query = "INSERT INTO prodi VALUES (?, ?, ?, ?)";
+       try(PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+           statement.setString(1, getId_prodi());
+           statement.setString(2, fakultas.getId_fakultas());
+           statement.setInt(3, jabatan.getId_jabatan());
+           statement.setString(4, getnama_prodi());
+           
+           statement.execute();
+           statement.close();
+       } catch (Exception e) {
+       }
+   }
+   
+   public Prodi satuDb(int Id_prodi){
+       Prodi pro = new Prodi();
+       String query = "SELECT * FROM prodi WHERE Id_prodi = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setInt(1, Id_prodi);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   pro.setId_prodi(rs.getString("Id_prodi"));
+                   pro.fakultas = new Fakultas().satuDb(rs.getString("Id_fakultas"));
+                   pro.jabatan = new Jabatan().satuDb(rs.getInt("id_jabatan"));
+                   pro.setnama_prodi(rs.getString("nama_prodi"));
+                                   
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return pro;
+   }
+   
+   public Prodi satuJabatanDb(int Id_jabatan){
+       Prodi pro = new Prodi();
+       String query = "SELECT * FROM prodi WHERE Id_jabatan = (?)";
+       try{
+           ResultSet rs;
+           try (PreparedStatement statement = connect.getConnection().prepareStatement(query)) {
+               statement.setInt(1, Id_jabatan);
+               rs = statement.executeQuery();
+               if(rs.next()){
+                   pro.setId_prodi(rs.getString("Id_prodi"));
+                   pro.fakultas = new Fakultas().satuDb(rs.getString("Id_fakultas"));
+                   pro.jabatan = new Jabatan().satuDb(rs.getInt("Id_jabatan"));
+                   pro.setnama_prodi(rs.getString("nama_prodi"));
+                                   
+               }
+           }
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return pro;
+   }
+   
+   public ArrayList<Prodi> semuaDb(){
+       ArrayList<Prodi> list = new ArrayList<>();
+       try{
+           String query = "SELECT * FROM prodi";
+           
+           PreparedStatement statement = connect.getConnection().prepareStatement(query);
+           ResultSet rs = statement.executeQuery();
+           while(rs.next()){
+               Prodi pro = new Prodi();
+                   pro.setId_prodi(rs.getString("Id_prodi"));
+                   pro.fakultas = new Fakultas().satuDb(rs.getString("Id_fakultas"));
+                   pro.jabatan = new Jabatan().satuDb(rs.getInt("id_jabatan"));
+                   pro.setnama_prodi(rs.getString("nama_prodi"));
+               list.add(pro);
+           }
+           statement.close();
+           rs.close();
+       }
+       catch(SQLException e){
+           
+       }
+       return list;
+   }
 }
